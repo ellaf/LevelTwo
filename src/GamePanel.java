@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	final int GAME_STATE = 1;
 	final int END_STATE = 2;
 	int currentState = MENU_STATE;
+	Font titleFont = new Font("Arial", Font.PLAIN, 48);
+	Font moreFont = new Font("Arial", Font.PLAIN, 25);
+	Rocketship becky = new Rocketship(230, 700, 50, 50, 5);
+	ObjectManager oliver = new ObjectManager();
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -37,6 +42,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 		this.fred = fred;
 		// this.susan = susan;
+		this.titleFont = titleFont;
+		oliver.addObject(becky);
 
 	}
 
@@ -65,6 +72,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 	void updateGameState() {
 
+		// becky.update();
+		oliver.update();
+		oliver.manageEnemies();
+
 	}
 
 	void updateEndState() {
@@ -75,6 +86,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 		g.setColor(Color.cyan);
 		g.fillRect(0, 0, 500, 800);
+		g.setColor(Color.LIGHT_GRAY);
+		g.setFont(titleFont);
+		g.drawString("LEAGUE INVADERS", 27, 200);
+		g.setFont(moreFont);
+		g.drawString("Press ENTER to start", 120, 280);
+		g.drawString("Press SPACE for instructions", 80, 370);
 
 	}
 
@@ -83,12 +100,20 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, 500, 800);
 
+		oliver.draw(g);
+
 	}
 
 	void drawEndState(Graphics g) {
 
 		g.setColor(Color.red);
 		g.fillRect(0, 0, 500, 800);
+		g.setFont(titleFont);
+		g.setColor(Color.BLACK);
+		g.drawString("GAME OVER", 95, 120);
+		g.setFont(moreFont);
+		g.drawString("You killed 0 aliens.", 132, 290);
+		g.drawString("Press BACKSPACE to Restart", 76, 490);
 
 	}
 
@@ -112,13 +137,36 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		}
 
 		System.out.println(currentState);
+
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+
+			becky.x -= becky.speed;
+
+		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+
+			becky.x += becky.speed;
+
+		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
+
+			becky.y -= becky.speed;
+
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+
+			becky.y += becky.speed;
+
+		}
+
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+
+			oliver.addObject(new Projectile(becky.x + 23, becky.y, 10, 10));
+
+		}
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-
-		System.out.println("Bonjour");
 
 	}
 
