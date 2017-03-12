@@ -5,7 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -21,6 +24,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Font moreFont = new Font("Arial", Font.PLAIN, 25);
 	Rocketship becky = new Rocketship(230, 700, 50, 50, 5);
 	ObjectManager oliver = new ObjectManager();
+	public static BufferedImage alienImg;
+	public static BufferedImage rocketImg;
+	public static BufferedImage bulletImg;
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -44,6 +50,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		// this.susan = susan;
 		this.titleFont = titleFont;
 		oliver.addObject(becky);
+		try {
+			alienImg = ImageIO.read(this.getClass().getResourceAsStream("alien.png"));
+			rocketImg = ImageIO.read(this.getClass().getResourceAsStream("rocket.png"));
+			bulletImg = ImageIO.read(this.getClass().getResourceAsStream("bullet.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -75,6 +89,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		// becky.update();
 		oliver.update();
 		oliver.manageEnemies();
+		oliver.checkCollision();
+		if (becky.isAlive == false) {
+
+			currentState = END_STATE;
+			oliver.reset();
+			becky = new Rocketship(230, 700, 50, 50, 5);
+			oliver.addObject(becky);
+
+		}
+		oliver.getScore();
 
 	}
 
@@ -112,7 +136,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.setColor(Color.BLACK);
 		g.drawString("GAME OVER", 95, 120);
 		g.setFont(moreFont);
-		g.drawString("You killed 0 aliens.", 132, 290);
+		g.drawString("You killed " + oliver.getScore() + " aliens.", 132, 290);
 		g.drawString("Press BACKSPACE to Restart", 76, 490);
 
 	}
@@ -140,19 +164,19 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 
-			becky.x -= becky.speed;
+			Rocketship.left = true;
 
 		} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 
-			becky.x += becky.speed;
+			Rocketship.right = true;
 
 		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
 
-			becky.y -= becky.speed;
+			Rocketship.up = true;
 
 		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 
-			becky.y += becky.speed;
+			Rocketship.down = true;
 
 		}
 
@@ -167,6 +191,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
+
+		Rocketship.up = false;
+		Rocketship.down = false;
+		Rocketship.left = false;
+		Rocketship.right = false;
 
 	}
 
