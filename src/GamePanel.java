@@ -151,7 +151,15 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && currentState == END_STATE) {
+
+			currentState += 1;
+
+		} else if (e.getKeyCode() == KeyEvent.VK_ENTER && currentState == MENU_STATE) {
+
+			currentState += 1;
+
+		} else if (e.getKeyCode() == KeyEvent.VK_ENTER && currentState == GAME_STATE) {
 
 			currentState += 1;
 
